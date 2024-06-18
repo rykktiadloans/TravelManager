@@ -4,6 +4,7 @@ module TravelManager {
     requires org.hibernate.orm.core;
     requires java.naming;
     requires java.sql;
+    requires jakarta.persistence;
     requires org.xerial.sqlitejdbc;
     exports org.example;
 }
