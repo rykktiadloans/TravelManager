@@ -24,8 +24,17 @@ import org.example.model.types.EventType;
 import org.example.model.types.MiscEvent;
 import org.example.view.Root;
 import org.example.view.interactions.*;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +53,18 @@ public class Main extends Application {
         Scene scene = new Scene(root.getRoot(), 800, 600);
         root.update();
 
+
+        try{
+            Configuration cfg = new Configuration().configure();
+            StandardServiceRegistry ssRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
+            SessionFactory sessionFactory = cfg.buildSessionFactory(ssRegistry);
+            Session session = sessionFactory.openSession();
+            Object result = session.createQuery("select sqlite_version()").getSingleResult();
+            System.out.println("MY DATABASE VERSION IS::::\n"+result);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
 
         stage.setTitle("Travel Manager");
