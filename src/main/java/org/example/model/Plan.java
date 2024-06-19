@@ -1,22 +1,23 @@
 package org.example.model;
 
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.Shadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.example.controller.EventController;
+import org.example.database.model.ControllerModel;
+import org.example.database.model.DynamicControllerModel;
+import org.example.database.model.NormalControllerModel;
+import org.example.database.model.PlanModel;
 import org.example.view.Root;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.time.DateTimeException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,6 +25,7 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 public class Plan {
     private static Plan plan = null;
+    private int openPlan = -1;
     private ArrayList<EventController> eventControllers;
     private EventController selectedItem = null;
 
@@ -116,5 +118,103 @@ public class Plan {
         }
 
         return eventControllerScroller;  //
+    }
+
+    public void save(String name, SessionFactory sessionFactory){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.getTransaction();
+        PlanModel planModel = new PlanModel(name);
+        planModel.setControllerModels(new HashSet<>());
+        try {
+            transaction.begin();
+            if(this.openPlan != -1){
+                session.remove(session.find(PlanModel.class, this.openPlan));
+            }
+            transaction.commit();
+            transaction = session.getTransaction();
+            transaction.begin();
+            session.persist(planModel);
+            for(EventController eventController : this.getEventControllers()){
+                ControllerModel controllerModel = eventController.getModel();
+                controllerModel.setPlan(planModel);
+                planModel.getControllerModels().add(controllerModel);
+                session.persist(controllerModel);
+            }
+            this.openPlan = planModel.getId();
+            System.out.println(this.openPlan);
+            transaction.commit();
+
+        }
+        catch (Exception e){
+            if(transaction.isActive()){
+                transaction.rollback();
+            }
+            throw e;
+        }
+        finally {
+            session.close();
+        }
+
+    }
+
+    public void load(String name, SessionFactory sessionFactory) throws Exception {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
+            PlanModel planModel = session.createQuery("WHERE name LIKE ?1", PlanModel.class)
+                            .setParameter(1, name)
+                    .getSingleResult();
+            Collection<NormalControllerModel> normalControllerModelCollection = new ArrayList<>(
+                    session.createQuery("WHERE plan = ?1", NormalControllerModel.class)
+                    .setParameter(1, planModel).getResultList());
+            Collection<DynamicControllerModel> dynamicControllerModelCollection = new ArrayList<>(
+                    session.createQuery("WHERE plan = ?1", DynamicControllerModel.class)
+                            .setParameter(1, planModel).getResultList());
+            Collection<ControllerModel> collection = new ArrayList<>(normalControllerModelCollection);
+            collection.addAll(dynamicControllerModelCollection);
+            this.getEventControllers().clear();
+            for(ControllerModel model : collection){
+                EventController eventController = model.unmodelize();
+                this.addEventController(eventController);
+            }
+            this.openPlan = planModel.getId();
+            transaction.commit();
+
+        }
+        catch (Exception e){
+            if(transaction.isActive()){
+                transaction.rollback();
+            }
+            throw e;
+        }
+        finally {
+            session.close();
+        }
+
+    }
+
+    public Collection<String> getSessions(SessionFactory sessionFactory){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.getTransaction();
+        Collection<String> collection;
+        try{
+            transaction.begin();
+            var query = session.createQuery("SELECT name FROM PlanModel", String.class);
+            collection = query.getResultList();
+            transaction.commit();
+        }
+        catch (Exception e){
+            if(transaction.isActive()){
+                transaction.rollback();
+            }
+            throw e;
+        }
+        finally {
+            session.close();
+
+        }
+        return collection;
+
     }
 }

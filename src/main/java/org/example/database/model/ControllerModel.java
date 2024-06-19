@@ -1,28 +1,32 @@
 package org.example.database.model;
 
 import jakarta.persistence.*;
+import org.example.controller.EventController;
+import org.example.model.Plan;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.AUTO;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ControllerModel {
-    @Id @GeneratedValue(strategy = AUTO)
+    @Id @GeneratedValue(strategy = SEQUENCE)
     @Column(name = "id")
-    private int id;
-    @ManyToOne
+    Integer id;
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="plan_id", nullable = false)
-    private int plan;
+    PlanModel plan;
     @Column(name = "name")
-    private String name;
+    String name;
     @Column(name = "begin")
-    private String begin;
+    String begin;
     @Column(name = "subtype")
-    private String subtype;
+    String subtype;
 
     public ControllerModel() { }
 
-    public ControllerModel(int plan, String name, String begin, String subtype){
+    public ControllerModel(PlanModel plan, String name, String begin, String subtype){
         this.plan = plan;
         this.name = name;
         this.begin = begin;
@@ -37,11 +41,11 @@ public class ControllerModel {
         this.id = id;
     }
 
-    public int getPlan() {
+    public PlanModel getPlan() {
         return plan;
     }
 
-    public void setPlan(int plan) {
+    public void setPlan(PlanModel plan) {
         this.plan = plan;
     }
 
@@ -68,4 +72,9 @@ public class ControllerModel {
     public void setSubtype(String subtype) {
         this.subtype = subtype;
     }
+
+    public EventController unmodelize() throws Exception {
+        throw new Exception("Normal controller models are serialized");
+    }
+
 }

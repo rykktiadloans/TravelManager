@@ -4,6 +4,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.example.database.model.ControllerModel;
 import org.example.model.Event;
 import org.example.view.Root;
 
@@ -17,4 +18,5 @@ public interface EventController {
     public void setSelectedType(int number);
     public GridPane getBox();
     public VBox getEditBox(Root root);
+    public ControllerModel getModel();
 }

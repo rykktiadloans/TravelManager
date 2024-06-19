@@ -4,18 +4,19 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import org.example.model.Plan;
-import org.example.view.interactions.AddConstant;
-import org.example.view.interactions.AddDynamic;
-import org.example.view.interactions.AddMisc;
-import org.example.view.interactions.DeleteEvent;
+import org.example.view.interactions.*;
+import org.hibernate.SessionFactory;
 
 public class Root {
     private MenuBar menuBar;
     private GridPane root;
     private VBox rightPanel;
+    private SessionFactory sessionFactory;
 
-    public Root(){
+    public Root(SessionFactory sessionFactory, Stage ownerStage){
+        this.sessionFactory = sessionFactory;
         this.root = new GridPane();
         Plan plan = Plan.getInstance();
         ColumnConstraints col1 = new ColumnConstraints();
@@ -44,7 +45,16 @@ public class Root {
         addDynamic.setOnAction(new AddDynamic().action(this));
         MenuItem deleteEvent = new MenuItem("Delete selected event");
         deleteEvent.setOnAction(new DeleteEvent().action(this));
+
+
+        MenuItem saveSession = new MenuItem("Save plan");
+        saveSession.setOnAction(new SaveSession(ownerStage, sessionFactory).action(this));
+        MenuItem loadSession = new MenuItem("Load plan");
+        loadSession.setOnAction(new LoadSession(ownerStage, sessionFactory).action(this));
+
+
         editMenu.getItems().addAll(addConstant, addMisc, addDynamic, deleteEvent);
+        fileMenu.getItems().addAll(saveSession, loadSession);
         this.menuBar = new MenuBar(fileMenu, editMenu);
         this.menuBar.setUseSystemMenuBar(true);
 
@@ -83,5 +93,13 @@ public class Root {
 
     public void setRightPanel(VBox rightPanel) {
         this.rightPanel = rightPanel;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }

@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import org.example.database.model.ControllerModel;
+import org.example.database.model.DynamicControllerModel;
 import org.example.model.Event;
 import org.example.model.Plan;
 import org.example.model.types.EventType;
@@ -118,7 +120,6 @@ public class DynamicEventController implements EventController{
         TextField nameField = new TextField(this.getEvent().getName());
         ComboBox<String> subtypeField = new ComboBox<>();
         subtypeField.getItems().addAll(this.getSubtypes());
-        subtypeField.setEditable(true);
         subtypeField.setValue(this.selectedType);
         TextField beginField = new TextField(this.getEvent().getStart().format(DateTimeFormatter.ofPattern("HH:mm")));
         TextField distanceField = new TextField(Float.toString(this.distance));
@@ -164,4 +165,16 @@ public class DynamicEventController implements EventController{
 
         return box;
     }
+
+    public ControllerModel getModel(){
+        DynamicControllerModel model = new DynamicControllerModel();
+        model.setDistance(this.getDistance());
+        model.setBegin(this.getEvent().getStart().format(DateTimeFormatter.ofPattern("HH:mm")));
+        model.setName(this.getEvent().getName());
+        model.setSubtype(this.getSelectedType());
+        return model;
+
+    }
+
+
 }

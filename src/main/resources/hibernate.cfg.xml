@@ -10,5 +10,8 @@
 
         <!-- SQL dialect for SQLite -->
         <property name="dialect">org.hibernate.community.dialect.SQLiteDialect</property>
+        <property name="hibernate.hbm2ddl.auto">
+            update
+        </property>
     </session-factory>
 </hibernate-configuration>

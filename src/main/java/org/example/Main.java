@@ -17,6 +17,10 @@ import javafx.stage.Stage;
 import org.example.controller.DynamicEventController;
 import org.example.controller.EventController;
 import org.example.controller.NormalEventController;
+import org.example.database.model.ControllerModel;
+import org.example.database.model.DynamicControllerModel;
+import org.example.database.model.NormalControllerModel;
+import org.example.database.model.PlanModel;
 import org.example.model.Event;
 import org.example.model.Plan;
 import org.example.model.types.ConstantEvent;
@@ -32,6 +36,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,24 +53,27 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Setting up main space
-        Root root = new Root();
-        Scene scene = new Scene(root.getRoot(), 800, 600);
-        root.update();
 
+        Root root = null;
 
         try{
-            Configuration cfg = new Configuration().configure();
+            Configuration cfg = new Configuration().configure()
+                    .addAnnotatedClass(PlanModel.class)
+                    .addAnnotatedClass(ControllerModel.class)
+                    .addAnnotatedClass(DynamicControllerModel.class)
+                    .addAnnotatedClass(NormalControllerModel.class)
+            ;
             StandardServiceRegistry ssRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
             SessionFactory sessionFactory = cfg.buildSessionFactory(ssRegistry);
-            Session session = sessionFactory.openSession();
-            Object result = session.createQuery("select sqlite_version()").getSingleResult();
-            System.out.println("MY DATABASE VERSION IS::::\n"+result);
+            root = new Root(sessionFactory, stage);
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            throw e;
         }
 
+        // Setting up main space
+        Scene scene = new Scene(root.getRoot(), 800, 600);
+        root.update();
 
         stage.setTitle("Travel Manager");
         stage.setScene(scene);

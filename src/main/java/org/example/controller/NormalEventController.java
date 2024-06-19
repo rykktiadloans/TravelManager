@@ -13,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import org.example.database.model.ControllerModel;
+import org.example.database.model.NormalControllerModel;
 import org.example.model.Event;
 import org.example.model.Plan;
 import org.example.model.types.EventType;
@@ -96,7 +98,6 @@ public class NormalEventController implements EventController{
         TextField nameField = new TextField(this.getEvent().getName());
         ComboBox<String> subtypeField = new ComboBox<>();
         subtypeField.getItems().addAll(this.getSubtypes());
-        subtypeField.setEditable(true);
         subtypeField.setValue(this.selectedType);
         TextField beginField = new TextField(this.getEvent().getStart().format(DateTimeFormatter.ofPattern("HH:mm")));
         TextField endField = new TextField(this.getEvent().getEnd().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -145,5 +146,14 @@ public class NormalEventController implements EventController{
         return box;
     }
 
+    public ControllerModel getModel(){
+        NormalControllerModel model = new NormalControllerModel();
+        model.setName(this.getEvent().getName());
+        model.setBegin(this.getEvent().getStart().format(DateTimeFormatter.ofPattern("HH:mm")));
+        model.setEnd(this.getEvent().getEnd().format(DateTimeFormatter.ofPattern("HH:mm")));
+        model.setSubtype(this.selectedType);
+        return model;
+
+    }
 
 }
