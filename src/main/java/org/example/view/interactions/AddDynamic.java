@@ -10,8 +10,17 @@ import org.example.view.Root;
 
 import java.time.LocalTime;
 
+/**
+ * A strategy on how to add a new empty dynamic event.
+ */
 public class AddDynamic implements ButtonStrategy{
 
+    /**
+     * Returns an EventHandler that adds a new DynamicEventController that starts at the latest point of the
+     * plan and ends at the same time.
+     * @param root Root object we operate with.
+     * @return The event handler.
+     */
     @Override
     public EventHandler<ActionEvent> action(Root root) {
         return new EventHandler<ActionEvent>() {

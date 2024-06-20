@@ -16,16 +16,29 @@ import org.example.model.Plan;
 import org.example.view.Root;
 import org.hibernate.SessionFactory;
 
+/**
+ * A strategy that defines how to load a plan from the database.
+ */
 public class LoadSession implements ButtonStrategy{
 
     private Stage ownerStage;
     private SessionFactory sessionFactory;
 
+    /**
+     * A constructor with some of the stuff we need for the strategy to work.
+     * @param ownerStage Main application stage so that we can define ownership on the dialogs.
+     * @param sessionFactory SessionFactory we use for communicating with the database.
+     */
     public LoadSession(Stage ownerStage, SessionFactory sessionFactory){
         this.ownerStage = ownerStage;
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * Returns an event handler that opens up a dialog where we can select a saved plan to load.
+     * @param root Root object we operate with.
+     * @return The event handler.
+     */
     @Override
     public EventHandler<ActionEvent> action(Root root) {
         return new EventHandler<ActionEvent>() {
@@ -59,6 +72,7 @@ public class LoadSession implements ButtonStrategy{
                             throw new RuntimeException(e);
                         }
                         dialog.close();
+                        Plan.getInstance().setSelectedItem(null);
                         root.update();
 
                     }

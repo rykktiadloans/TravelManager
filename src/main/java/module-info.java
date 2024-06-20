@@ -1,3 +1,6 @@
+/**
+ * Module of the Travel Manager application.
+ */
 module TravelManager {
     requires javafx.controls;
     requires javafx.fxml;

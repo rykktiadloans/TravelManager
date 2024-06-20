@@ -49,14 +49,22 @@ import static javafx.scene.input.MouseEvent.MOUSE_CLICKED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 
+/**
+ * The main class where all the components come together.
+ */
 public class Main extends Application {
 
+    /**
+     * Function that defines the construction of the main window.
+     * @param stage Stage that the program is run in.
+     */
     @Override
     public void start(Stage stage) {
 
         Root root = null;
 
         try{
+            // Configuring the Hibernate connection to SQLite for the ability to save sessions.
             Configuration cfg = new Configuration().configure()
                     .addAnnotatedClass(PlanModel.class)
                     .addAnnotatedClass(ControllerModel.class)
@@ -75,10 +83,16 @@ public class Main extends Application {
         Scene scene = new Scene(root.getRoot(), 800, 600);
         root.update();
 
+
         stage.setTitle("Travel Manager");
         stage.setScene(scene);
         stage.show(); //
     }
+
+    /**
+     * The main() function that is run when the program is launched.
+     * @param args Launching flags.
+     */
     public static void main(String[] args) {
         launch();
     }

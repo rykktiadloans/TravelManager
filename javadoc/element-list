@@ -1,0 +1,8 @@
+module:TravelManager
+org.example
+org.example.controller
+org.example.database.model
+org.example.model
+org.example.model.types
+org.example.view
+org.example.view.interactions

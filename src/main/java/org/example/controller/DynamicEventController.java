@@ -23,14 +23,63 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The class that defines an event controller that only has a set beginning time.
+ * Its end time is calculated using the method of transportation set by the selected subtype and the distance that is traversed.
+ * It's fit for defining events where the user has to travel by foot or their own vehicle.
+ */
 public class DynamicEventController implements EventController{
 
+    /**
+     * The event that is managed
+     */
     private Event event;
+    /**
+     * The type that is selected for the event.
+     */
     private String selectedType;
+    /**
+     * The distance of the travel.
+     */
     private float distance;
 
+    /**
+     * The object that maps available subtypes to their speed.
+     * <table>
+     *     <thead>
+     *         <tr>
+     *             <th>Subtype</th>
+     *             <th>Speed (km/h)</th>
+     *         </tr>
+     *     </thead>
+     *     <tbody>
+     *         <tr>
+     *             <td>Walk</td>
+     *             <td>1 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Run</td>
+     *             <td>3 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Car</td>
+     *             <td>80 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Bike</td>
+     *             <td>10 km/h</td>
+     *         </tr>
+     *     </tbody>
+     * </table>
+     */
     private HashMap<String, Float> subtypes;
 
+    /**
+     * The constructor. Takes the Event object to manage and the initial distance of the travel.
+     * A unique EventType object doesn't need to be supplied because it's stored as a part of the object.
+     * @param event Event to manage
+     * @param distance Distance of the travel
+     */
     public DynamicEventController(Event event, float distance){
         this.event = event;
         this.distance = distance;
@@ -44,26 +93,70 @@ public class DynamicEventController implements EventController{
                 .plusMinutes(
                         (int) ((distance / this.subtypes.get(this.selectedType)) * 60)));
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Event getEvent() {
         return this.event;
     }
 
+    /**
+     * {@inheritDoc}
+     * The color of this event controller is blue.
+     */
     @Override
     public Color getColor() {
         return Color.BLUE;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <table>
+     *     <thead>
+     *         <tr>
+     *             <th>Subtype</th>
+     *             <th>Speed (km/h)</th>
+     *         </tr>
+     *     </thead>
+     *     <tbody>
+     *         <tr>
+     *             <td>Walk</td>
+     *             <td>1 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Run</td>
+     *             <td>3 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Car</td>
+     *             <td>80 km/h</td>
+     *         </tr>
+     *         <tr>
+     *             <td>Bike</td>
+     *             <td>10 km/h</td>
+     *         </tr>
+     *     </tbody>
+     * </table>
+     */
     @Override
     public ArrayList<String> getSubtypes() {
         return new ArrayList<>(this.subtypes.keySet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSelectedType() {
         return this.selectedType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSelectedType(int number) {
         this.selectedType = this.getSubtypes().get(number);
@@ -74,10 +167,18 @@ public class DynamicEventController implements EventController{
 
     }
 
+    /**
+     * Return the distance of the travel.
+     * @return Distance of the travel.
+     */
     public float getDistance() {
         return distance;
     }
 
+    /**
+     * Set the distance of the travel. The end time is automatically calculated.
+     * @param distance Distance of the travel.
+     */
     public void setDistance(float distance) {
         this.distance = distance;
         this.event.setEnd(this.event.getStart()
@@ -85,6 +186,9 @@ public class DynamicEventController implements EventController{
                         (int) ((distance / this.subtypes.get(this.selectedType)) * 60)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GridPane getBox() {
         GridPane box = new GridPane();
@@ -114,6 +218,9 @@ public class DynamicEventController implements EventController{
         return box;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public VBox getEditBox(Root root) {
         VBox box = new VBox();
@@ -166,6 +273,9 @@ public class DynamicEventController implements EventController{
         return box;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ControllerModel getModel(){
         DynamicControllerModel model = new DynamicControllerModel();
         model.setDistance(this.getDistance());

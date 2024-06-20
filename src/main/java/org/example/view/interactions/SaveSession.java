@@ -22,16 +22,29 @@ import org.hibernate.SessionFactory;
 
 import java.time.LocalTime;
 
+/**
+ * A strategy that defines how to save a plan to the database.
+ */
 public class SaveSession implements ButtonStrategy{
 
     private Stage ownerStage;
     private SessionFactory sessionFactory;
 
+    /**
+     * A constructor with some of the stuff we need for the strategy to work.
+     * @param ownerStage Main application stage so that we can define ownership on the dialogs.
+     * @param sessionFactory SessionFactory we use for communicating with the database.
+     */
     public SaveSession(Stage ownerStage, SessionFactory sessionFactory){
         this.ownerStage = ownerStage;
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * Returns an event handler that opens up a dialog where we can define a name of the plan we save.
+     * @param root Root object we operate with.
+     * @return The event handler.
+     */
     @Override
     public EventHandler<ActionEvent> action(Root root) {
         return new EventHandler<ActionEvent>() {

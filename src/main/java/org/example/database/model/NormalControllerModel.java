@@ -12,38 +12,55 @@ import java.time.LocalTime;
 
 import static jakarta.persistence.GenerationType.AUTO;
 
+/**
+ * The class that represents a persistable version of the NormalEventController. Extends the ControllerModel class and is actually
+ * the one that is saved on the disk.
+ */
 @Entity
 @Table(name = "normal_controllers")
 public class NormalControllerModel extends ControllerModel{
     @Column(name = "end")
     String end;
 
+    /**
+     * Empty constructor.
+     */
     public NormalControllerModel(){}
 
+    /**
+     * Full constructor.
+     * @param plan The plan model the controller is attached to.
+     * @param name The name of the event.
+     * @param begin The beginning of the event.
+     * @param end The end of the event.
+     * @param subtype The selected subtype of the event.
+     */
     public NormalControllerModel(PlanModel plan, String name, String begin, String end, String subtype){
         super(plan, name, begin, subtype);
         this.end = end;
     }
 
-    /*
-    CREATE TABLE normal_controllers(
-        id INT PRIMARY KEY NOT NULL,
-        name TEXT NOT NULL,
-        begin TEXT NOT NULL,
-        end TEXT NOT NULL,
-        subtype TEXT NOT NULL
-    );
+    /**
+     * Return the end of the event.
+     * @return The end of the event.
      */
-
-
     public String getEnd() {
         return end;
     }
 
+    /**
+     * Set the end of the event.
+     * @param end The end of the event.
+     */
     public void setEnd(String end) {
         this.end = end;
     }
 
+    /**
+     * Returns an EventController unpersistable version of itself. Finds the appropriate EventType using the selected type.
+     * @return The unpersistable version of itself.
+     * @throws Exception Throws an exception in case the selected type somehow isn't found in any of the EventTypes.
+     */
     @Override
     public EventController unmodelize() throws Exception {
         Event event = new Event(this.name, LocalTime.parse(this.getBegin()), LocalTime.parse(this.getEnd()));

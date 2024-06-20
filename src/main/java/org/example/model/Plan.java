@@ -23,6 +23,9 @@ import java.util.stream.Stream;
 
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
+/**
+ * The class represents a singleton object that contains the current plan - the sequence of events stored in it.
+ */
 public class Plan {
     private static Plan plan = null;
     private int openPlan = -1;
@@ -33,10 +36,18 @@ public class Plan {
         this.eventControllers = new ArrayList<>();
     }
 
+    /**
+     * Returns the event controllers stored inside the plan.
+     * @return Plan's event controllers.
+     */
     public ArrayList<EventController> getEventControllers(){
         return this.eventControllers;
     }
 
+    /**
+     * Adds a new event controller to the plan, checks if it overlaps with any other event, and then sorts it.
+     * @param ec New event controller.
+     */
     public void addEventController(EventController ec){
         boolean isOverlap = this.getEventControllers().stream().allMatch(cur -> {
             return !(cur.getEvent().getEnd().isBefore(ec.getEvent().getStart()) || cur.getEvent().getStart().isAfter(ec.getEvent().getEnd()));
@@ -48,20 +59,36 @@ public class Plan {
         this.sortEvents();
     }
 
+    /**
+     * Return the event controller by index.
+     * @param i Index
+     * @return Event controller stored in the index.
+     */
     public EventController getEventController(int i){
         return this.eventControllers.get(i);
     }
 
+    /**
+     * Remove the event controller stored on the index.
+     * @param i Index
+     */
     public void deleteEventController(int i){
         this.eventControllers.remove(i);
     }
 
+    /**
+     * Sorts all the events according to their start times.
+     */
     public void sortEvents(){
         Stream<EventController> stream = this.eventControllers.stream();
         stream = stream.sorted(Comparator.comparing(cur -> cur.getEvent().getStart()));
         this.eventControllers = (ArrayList<EventController>) stream.collect(Collectors.toList());
     }
 
+    /**
+     * Returns the singleton instance of the plan.
+     * @return The instance of the plan.
+     */
     public static Plan getInstance(){
         if(plan == null){
             plan = new Plan();
@@ -69,14 +96,27 @@ public class Plan {
         return plan;
     }
 
+    /**
+     * Returns the selected event controller.
+     * @return The selected event controller.
+     */
     public EventController getSelectedItem() {
         return selectedItem;
     }
 
+    /**
+     * Changes the selected event controller to the one supplied.
+     * @param selectedItem New selected controller.
+     */
     public void setSelectedItem(EventController selectedItem) {
         this.selectedItem = selectedItem;
     }
 
+    /**
+     * Returns the event list GUI of the plan.
+     * @param root The root object that renders all of that.
+     * @return The GUI of the event list.
+     */
     public ScrollPane getPane(Root root){
         ScrollPane eventControllerScroller = new ScrollPane();
         eventControllerScroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -120,6 +160,11 @@ public class Plan {
         return eventControllerScroller;  //
     }
 
+    /**
+     * Saves the plan to the database under the supplied name.
+     * @param name The name of the plan that is saved to the database.
+     * @param sessionFactory The Hibernate SessionFactory we use to communicate with the database.
+     */
     public void save(String name, SessionFactory sessionFactory){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.getTransaction();
@@ -157,6 +202,12 @@ public class Plan {
 
     }
 
+    /**
+     * Load a plan from the database using it's name.
+     * @param name Name of the plan saved to the database.
+     * @param sessionFactory The SessionFactory we use to communicate with the database.
+     * @throws Exception Throws exception in case the transaction fails.
+     */
     public void load(String name, SessionFactory sessionFactory) throws Exception {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.getTransaction();
@@ -194,6 +245,11 @@ public class Plan {
 
     }
 
+    /**
+     * Returns a collection of plans saved to the database.
+     * @param sessionFactory SessionFactory we use to communicate with the database.
+     * @return The collection of names of saved plans.
+     */
     public Collection<String> getSessions(SessionFactory sessionFactory){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.getTransaction();

@@ -25,37 +25,72 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * A class that defines an event controller that has both beginning and end time set manually.
+ * The event type is set as a separate object. Fit for public transportation and misc events such as eating or sightseeing.
+ */
 public class NormalEventController implements EventController{
 
+    /**
+     * The Event to be managed
+     */
     private Event event;
+    /**
+     * The EventType object associated with the event.
+     */
     private EventType type;
+    /**
+     * The selected subtype
+     */
     private String selectedType;
 
+    /**
+     * The constructor fo the controller. Takes in an event to manage and an associated type of the event.
+     * @param event Event for the controller to manage
+     * @param type Type of the event
+     */
     public NormalEventController(Event event, EventType type){
         this.event = event;
         this.type = type;
         this.selectedType = this.type.getSubtypes().get(0);
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Event getEvent() {
         return this.event;
     }
 
+    /**
+     * {@inheritDoc}
+     * The color is set inside the EventType object associated with the event.
+     */
     @Override
     public Color getColor() {
         return this.type.getColor();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArrayList<String> getSubtypes() {
         return this.type.getSubtypes();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSelectedType() {
         return this.selectedType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSelectedType(int number) {
         this.selectedType = this.getSubtypes().get(number);
@@ -63,6 +98,9 @@ public class NormalEventController implements EventController{
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GridPane getBox() {
         GridPane box = new GridPane();
@@ -92,6 +130,9 @@ public class NormalEventController implements EventController{
         return box;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public VBox getEditBox(Root root) {
         VBox box = new VBox();
@@ -146,6 +187,9 @@ public class NormalEventController implements EventController{
         return box;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ControllerModel getModel(){
         NormalControllerModel model = new NormalControllerModel();
         model.setName(this.getEvent().getName());
