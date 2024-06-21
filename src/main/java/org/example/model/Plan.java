@@ -203,7 +203,7 @@ public class Plan {
     }
 
     /**
-     * Load a plan from the database using it's name.
+     * Load a plan from the database using its name.
      * @param name Name of the plan saved to the database.
      * @param sessionFactory The SessionFactory we use to communicate with the database.
      * @throws Exception Throws exception in case the transaction fails.
