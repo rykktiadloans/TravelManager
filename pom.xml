@@ -68,6 +68,19 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>4.0.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 
