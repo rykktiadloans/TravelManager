@@ -1,8 +1,8 @@
 module:TravelManager
-org.example
-org.example.controller
-org.example.database.model
-org.example.model
-org.example.model.types
-org.example.view
-org.example.view.interactions
+org.TravelManager
+org.TravelManager.controller
+org.TravelManager.database.model
+org.TravelManager.model
+org.TravelManager.model.types
+org.TravelManager.view
+org.TravelManager.view.interactions
